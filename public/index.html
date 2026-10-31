@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gul Makkai Palace — Wedding & Event Venue, Peshawar</title>
+<meta name="description" content="Gul Makkai Palace & Arena, Northern Bypass, Peshawar. Wedding hall for 2,000+ guests with a large private car park. Check dates and request a booking online.">
+<meta name="theme-color" content="#0f3b2f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+<div class="announce" id="announce" hidden></div>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a href="#top" class="brand"><span class="brand-mark" id="brandMark">✦</span><span><b id="bizName">Gul Makkai Palace</b><small id="bizTag"></small></span></a>
+    <nav class="links" id="links" aria-label="Sections">
+      <a href="#halls">Halls</a><a href="#packages">Packages</a><a href="#book">Availability</a><a href="#gallery" id="navGallery">Gallery</a><a href="#visit">Contact</a>
+      <button class="linkbtn" type="button" data-open="lookup">My booking</button>
+    </nav>
+    <a href="#book" class="btn gold sm nav-cta">Check dates</a>
+    <button class="burger" id="burger" type="button" aria-label="Menu"><span></span><span></span></button>
+  </div>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="jali" aria-hidden="true"></div>
+    <div class="wrap hero-in">
+      <div class="hero-text">
+        <p class="eyebrow light" id="heroEyebrow">Weddings · Walima · Mehndi · Events</p>
+        <h1 id="heroTitle">Where Peshawar celebrates.</h1>
+        <p class="lead" id="heroSub"></p>
+        <form class="quick" id="quick">
+          <label for="qDate">Your event date</label>
+          <div class="quick-row">
+            <input type="date" id="qDate" required>
+            <button class="btn gold" type="submit">Check availability</button>
+          </div>
+        </form>
+        <ul class="facts" id="facts"></ul>
+      </div>
+      <div class="arch-frame" id="heroArch"><div class="arch-inner" id="heroSlides"></div></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section ivory" id="about">
+    <div class="wrap about">
+      <div>
+        <p class="eyebrow">The venue</p>
+        <h2 id="aboutTitle"></h2>
+        <p class="body-lg" id="aboutText"></p>
+      </div>
+      <ul class="facilities" id="facilities"></ul>
+    </div>
+  </section>
+
+  <!-- HALLS -->
+  <section class="section" id="halls">
+    <div class="wrap">
+      <div class="sec-head center"><p class="eyebrow">Spaces</p><h2>Our halls</h2><div class="orn" aria-hidden="true"><i></i>✦<i></i></div></div>
+      <div class="halls" id="hallList"></div>
+    </div>
+  </section>
+
+  <!-- PACKAGES -->
+  <section class="section dark" id="packages">
+    <div class="jali faint" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="sec-head center"><p class="eyebrow light">Catering</p><h2>Packages &amp; menus</h2><div class="orn light" aria-hidden="true"><i></i>✦<i></i></div>
+        <p class="sec-sub">Price per head, including hall. Final menu can be tailored when you visit.</p></div>
+      <div class="pkgs" id="pkgList"></div>
+    </div>
+  </section>
+
+  <!-- OFFERS -->
+  <section class="section ivory" id="offers" hidden>
+    <div class="wrap">
+      <div class="sec-head center"><p class="eyebrow">This season</p><h2>Current offers</h2></div>
+      <div class="offers" id="offerList"></div>
+    </div>
+  </section>
+
+  <!-- BOOKING -->
+  <section class="section" id="book">
+    <div class="wrap">
+      <div class="sec-head center"><p class="eyebrow">Availability</p><h2>Check a date &amp; request it</h2><div class="orn" aria-hidden="true"><i></i>✦<i></i></div>
+        <p class="sec-sub" id="bookSub">Pick a date to see which halls are free for lunch and dinner. We'll call you to confirm.</p></div>
+      <div class="book">
+        <div class="card cal">
+          <div class="cal-head">
+            <button type="button" class="icon" id="prevM" aria-label="Previous month">‹</button>
+            <h3 id="calTitle"></h3>
+            <button type="button" class="icon" id="nextM" aria-label="Next month">›</button>
+          </div>
+          <div class="cal-grid cal-dow" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+          <div class="cal-grid" id="calGrid" role="grid"></div>
+          <div class="legend"><span><i class="l-free"></i>Available</span><span><i class="l-part"></i>Some slots booked</span><span><i class="l-full"></i>Fully booked</span></div>
+          <div class="day-detail" id="dayDetail"><p class="muted">Select a date to see lunch and dinner availability.</p></div>
+        </div>
+
+        <form class="card bform" id="bform" novalidate>
+          <h3>Booking request</h3>
+          <div class="row2">
+            <label for="fDate">Date<input type="date" id="fDate" required></label>
+            <label for="fSlot">Time<select id="fSlot" required></select></label>
+          </div>
+          <div class="row2">
+            <label for="fHall">Hall<select id="fHall" required></select></label>
+            <label for="fGuests">Guests<input type="number" id="fGuests" min="1" inputmode="numeric" placeholder="e.g. 800" required></label>
+          </div>
+          <div class="row2">
+            <label for="fEvent">Event<select id="fEvent"></select></label>
+            <label for="fPkg">Package<select id="fPkg"></select></label>
+          </div>
+          <div class="row2">
+            <label for="fName">Your name<input id="fName" autocomplete="name" maxlength="100" required></label>
+            <label for="fPhone">Phone / WhatsApp<input id="fPhone" type="tel" autocomplete="tel" placeholder="03xx xxxxxxx" required></label>
+          </div>
+          <fieldset class="addons" id="fAddonsBox" hidden><legend>Extras for your event <span>(optional)</span></legend><div id="fAddons"></div></fieldset>
+          <label for="fNotes">Special arrangements (optional)<textarea id="fNotes" rows="2" maxlength="1000" placeholder="e.g. naat khwan, fireworks, wheelchair access, a specific stage theme…"></textarea></label>
+          <div class="estimate" id="estimate" hidden></div>
+          <p class="err" id="bErr" hidden></p>
+          <button class="btn emerald block" id="bSend" type="submit">Send booking request</button>
+          <p class="fine">No payment now. Your date is held once the advance is paid.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="section ivory" id="gallery" hidden>
+    <div class="wrap">
+      <div class="sec-head center"><p class="eyebrow">Moments</p><h2>Gallery</h2><div class="orn" aria-hidden="true"><i></i>✦<i></i></div></div>
+      <div class="gallery" id="galList"></div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="section" id="reviews" hidden>
+    <div class="wrap">
+      <div class="sec-head center"><p class="eyebrow">Families say</p><h2>Reviews</h2></div>
+      <div class="reviews" id="revList"></div>
+    </div>
+  </section>
+
+  <!-- VISIT -->
+  <section class="section dark" id="visit">
+    <div class="wrap visit">
+      <div>
+        <p class="eyebrow light">Visit us</p>
+        <h2>Come see the hall</h2>
+        <p class="body-lg light-muted" id="addr"></p>
+        <div class="contacts" id="contacts"></div>
+        <button class="btn outline-gold" type="button" data-open="lookup">Check my booking</button>
+      </div>
+      <div class="map-wrap"><iframe id="map" title="Map to the venue" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <a class="btn gold block" id="dirBtn" target="_blank" rel="noopener">Get directions</a></div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer"><div class="wrap foot"><span>© <span id="yr"></span> <span id="footName"></span> · Peshawar</span><span class="socials" id="socials"></span></div></footer>
+
+<a class="wa" id="waFloat" target="_blank" rel="noopener" aria-label="WhatsApp us" hidden>
+  <svg viewBox="0 0 32 32" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.5.7 4.8 2 6.8L3 29l6.8-2.2c1.9 1.1 4 1.6 6.2 1.6 7 0 12.7-5.6 12.7-12.6S23 3 16 3zm0 23c-2 0-3.9-.6-5.6-1.6l-.4-.2-4 1.3 1.3-3.9-.3-.4c-1.1-1.7-1.7-3.6-1.7-5.6C5.3 9.8 10.1 5 16 5s10.7 4.8 10.7 10.6S21.9 26 16 26zm5.9-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.4.3-.6.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.6 5.7 5 .8.3 1.4.5 1.9.7.8.3 1.6.2 2.2.1.7-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg>
+</a>
+
+<div class="modal" id="doneModal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="doneTitle">
+    <div class="seal" aria-hidden="true">✦</div>
+    <h3 id="doneTitle">Request received</h3>
+    <p class="muted">Your reference</p>
+    <p class="ref" id="dRef"></p>
+    <dl class="sum" id="dSum"></dl>
+    <p class="fine">We'll call you within a day to confirm. Keep your reference to check the status.</p>
+    <div class="modal-actions"><a class="btn wa-btn" id="dWa" target="_blank" rel="noopener" hidden>Send on WhatsApp</a><button class="btn ghost" type="button" data-close>Done</button></div>
+  </div>
+</div>
+
+<div class="modal" id="lookupModal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="lkTitle">
+    <button class="x" type="button" data-close aria-label="Close">×</button>
+    <h3 id="lkTitle">Check my booking</h3>
+    <form class="stack" id="lkForm">
+      <label for="lkRef">Reference<input id="lkRef" placeholder="GM-XXXXX" required></label>
+      <label for="lkPhone">Phone used for the booking<input id="lkPhone" type="tel" required></label>
+      <button class="btn emerald block">Find booking</button>
+    </form>
+    <div id="lkOut"></div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" hidden><img id="lbImg" alt=""><p id="lbCap"></p></div>
+
+<script src="/js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Financial report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --em: #0f3b2f; --gold: #c9a45c; --ink: #1b2420; --muted: #66716b; --line: #ddd7c8; --good: #1f6b41; --bad: #9b2f28; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ecebe5; color: var(--ink); font: 12.5px/1.45 'Jost', 'Segoe UI', sans-serif; }
+  .bar { position: sticky; top: 0; z-index: 5; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: center; padding: 10px 12px; background: var(--em); color: #fff; }
+  .bar select, .bar input { font: 500 14px 'Jost'; padding: 8px 10px; border-radius: 8px; border: 0; }
+  .bar button, .bar a { font: 600 14px 'Jost'; padding: 9px 16px; border-radius: 99px; border: 0; cursor: pointer; text-decoration: none; background: #fff; color: var(--em); }
+  .bar .pr { background: var(--gold); color: #0a2a21; }
+  .paper { width: 210mm; margin: 18px auto; background: #fff; padding: 14mm 14mm 12mm; box-shadow: 0 10px 40px -18px rgba(0,0,0,.35); }
+  .head { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--gold); }
+  .head h1 { font: 600 22px 'Bodoni Moda', Georgia, serif; margin: 0; color: var(--em); }
+  .head p { margin: 2px 0 0; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+  .head .contact { text-align: right; color: var(--muted); font-size: 11px; max-width: 75mm; }
+  .title { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; margin: 14px 0 10px; }
+  .title h2 { font: 600 20px 'Bodoni Moda', Georgia, serif; margin: 0; text-transform: uppercase; letter-spacing: .02em; }
+  .title .meta { text-align: right; color: var(--muted); font-size: 11.5px; }
+  .audit { border-radius: 10px; padding: 10px 14px; margin: 8px 0 12px; font-size: 12.5px; }
+  .audit.ok { background: #eef7f1; border: 1px solid #cfe5d7; } .audit.warn { background: #fdf3e2; border: 1px solid #f0d9a8; } .audit.bad { background: #fbeceb; border: 1px solid #efc9c5; }
+  .audit b { display: block; font-size: 13.5px; }
+  .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0 4px; }
+  .kpi { border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .kpi span { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .kpi b { display: block; font: 600 20px 'Bodoni Moda', Georgia, serif; margin-top: 2px; }
+  .kpi.in b { color: var(--good); } .kpi.out b { color: var(--bad); }
+  h3 { font: 600 11px 'Jost'; letter-spacing: .16em; text-transform: uppercase; color: var(--em); margin: 18px 0 6px; padding-bottom: 4px; border-bottom: 1px solid var(--gold); }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); border-bottom: 1.5px solid var(--ink); padding: 5px 4px; white-space: nowrap; }
+  td { padding: 5px 4px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tfoot td { font-weight: 700; border-top: 1.5px solid var(--ink); border-bottom: 0; }
+  thead { display: table-header-group; } tr { page-break-inside: avoid; }
+  .r { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .in { color: var(--good); } .out { color: var(--bad); } .muted { color: var(--muted); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .ok-t { color: var(--good); font-weight: 600; } .bad-t { color: var(--bad); font-weight: 600; }
+  .sigs { display: grid; grid-template-columns: 1fr 1fr; gap: 22mm; margin-top: 20mm; page-break-inside: avoid; }
+  .sig { border-top: 1.5px solid var(--ink); padding-top: 5px; } .sig b { display: block; } .sig span { display: block; color: var(--muted); margin-top: 8px; }
+  .foot { margin-top: 12mm; padding-top: 6px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; color: var(--muted); font-size: 10px; }
+  .empty { color: var(--muted); font-style: italic; padding: 6px 0; }
+  .err { max-width: 520px; margin: 60px auto; background: #fff; padding: 24px; border-radius: 12px; text-align: center; }
+  @page { size: A4; margin: 10mm 0; }
+  @media print { body { background: #fff; } .bar { display: none; } .paper { margin: 0 auto; box-shadow: none; padding-top: 4mm; } }
+  @media screen and (max-width: 820px) { .paper { width: 100%; margin: 0; padding: 14px; } .two, .kpis { grid-template-columns: 1fr; } .scroll { overflow-x: auto; } }
+</style>
+</head>
+<body>
+<div class="bar">
+  <select id="kind"><option value="day">Daily (day book)</option><option value="month">Monthly</option><option value="year">Yearly</option><option value="range">Date range</option></select>
+  <span id="pick"></span>
+  <button type="button" id="go">Show</button>
+  <button type="button" class="pr" id="print">Print / Save as PDF</button>
+  <a id="csv" href="/api/admin/export/transactions">Export all to Excel (CSV)</a>
+</div>
+<div id="out"><p style="text-align:center;margin:40px">Loading…</p></div>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const DOW = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const pd = d => { if (!d) return ''; const x = new Date(d + 'T12:00:00'); return `${x.getDate()} ${MON[x.getMonth()].slice(0, 3)} ${x.getFullYear()}`; };
+const pdl = d => { const x = new Date(d + 'T12:00:00'); return `${DOW[x.getDay()]}, ${x.getDate()} ${MON[x.getMonth()]} ${x.getFullYear()}`; };
+const when = ts => new Date(String(ts).replace(' ', 'T') + (String(ts).endsWith('Z') ? '' : 'Z')).toLocaleString('en-GB', { timeZone: 'Asia/Karachi', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+let CUR = 'Rs';
+const money = n => `${CUR} ${Math.round(Number(n) || 0).toLocaleString('en-PK')}`;
+const pkToday = () => { const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Karachi', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()).map(x => [x.type, x.value])); return `${p.year}-${p.month}-${p.day}`; };
+const monthEnd = m => { const [y, mo] = m.split('-').map(Number); return `${m}-${String(new Date(Date.UTC(y, mo, 0)).getUTCDate()).padStart(2, '0')}`; };
+
+// ----- period picker (state lives in the URL so a report can be bookmarked) -----
+const q = new URLSearchParams(location.search), T = pkToday();
+let kind = q.get('kind') || 'day';
+function renderPick() {
+  $('#kind').value = kind;
+  const v = q.get('v') || '';
+  $('#pick').innerHTML = kind === 'day' ? `<input type="date" id="pv" value="${v || T}">`
+    : kind === 'month' ? `<input type="month" id="pv" value="${v || T.slice(0, 7)}">`
+    : kind === 'year' ? `<input type="number" id="pv" min="2020" max="2100" value="${v || T.slice(0, 4)}" style="width:100px">`
+    : `<input type="date" id="pf" value="${q.get('from') || T.slice(0, 8) + '01'}"> to <input type="date" id="pt" value="${q.get('to') || T}">`;
+}
+$('#kind').onchange = e => { kind = e.target.value; q.delete('v'); renderPick(); };
+$('#go').onclick = () => {
+  const p = new URLSearchParams({ kind });
+  if (kind === 'range') { p.set('from', $('#pf').value); p.set('to', $('#pt').value); } else p.set('v', $('#pv').value);
+  location.search = p.toString();
+};
+$('#print').onclick = () => window.print();
+function period() {
+  const v = q.get('v');
+  if (kind === 'month') { const m = v || T.slice(0, 7); return { from: m + '-01', to: monthEnd(m), title: 'Monthly financial report', sub: `${MON[Number(m.slice(5)) - 1]} ${m.slice(0, 4)}` }; }
+  if (kind === 'year') { const y = v || T.slice(0, 4); return { from: `${y}-01-01`, to: `${y}-12-31`, title: 'Annual financial report', sub: `Year ${y} (1 January – 31 December)` }; }
+  if (kind === 'range') { const f = q.get('from') || T, t = q.get('to') || T; return { from: f, to: t, title: 'Financial report', sub: `${pd(f)} – ${pd(t)}` }; }
+  const d = v || T; return { from: d, to: d, title: 'Daily financial report', sub: pdl(d) };
+}
+
+function auditBox(r, P) {
+  const changed = r.closings.filter(c => !c.verified);
+  const closedOk = r.closings.filter(c => c.verified);
+  const open = r.open_days;
+  if (P.from === P.to) {
+    const c = r.closings[0];
+    if (!c) return `<div class="audit warn"><b>Day not closed yet</b>${P.from >= T ? 'This day is still open. It closes automatically at midnight (Pakistan time), after which only the owner can change it.' : 'This day has not been closed.'}</div>`;
+    if (c.verified) return `<div class="audit ok"><b>✔ Day closed and verified unchanged</b>Closed ${when(c.closed_at)} by ${esc(c.closed_by)} with ${c.tx_count} entries. Nothing has been added, changed or deleted since. Fingerprint ${esc(c.fingerprint.slice(0, 16))}…</div>`;
+    return `<div class="audit bad"><b>⚠ Changed after closing</b>When closed (${when(c.closed_at)}) this day had ${c.tx_count} entries, in ${money(c.income)}, out ${money(c.expense)}. It now has ${c.now.tx_count} entries, in ${money(c.now.income)}, out ${money(c.now.expense)}.
+      ${c.changes.length ? '<br>Changes: ' + c.changes.map(x => `${esc(x.summary)} — ${esc(x.admin_name)}, ${when(x.created_at)}`).join('; ') : ''}</div>`;
+  }
+  let html = `<div class="audit ${changed.length ? 'bad' : open.length ? 'warn' : 'ok'}"><b>${changed.length ? `⚠ ${changed.length} closed day(s) changed after closing` : open.length ? 'Some days are not closed yet' : '✔ All days closed and verified unchanged'}</b>
+    ${closedOk.length} closed day(s) verified unchanged.${open.length ? ` Not closed yet: ${open.map(pd).join(', ')}.` : ''}`;
+  if (changed.length) html += '<br>' + changed.map(c => `<b style="display:inline">${pd(c.date)}</b>: was in ${money(c.income)} / out ${money(c.expense)} (${c.tx_count} entries), now in ${money(c.now.income)} / out ${money(c.now.expense)} (${c.now.tx_count})${c.changes.length ? ' — ' + c.changes.map(x => esc(x.admin_name)).join(', ') : ''}`).join('<br>');
+  return html + '</div>';
+}
+
+function render(r, P) {
+  CUR = r.venue.currency;
+  const net = r.income - r.expense, v = r.venue;
+  const catTable = (rows, cls, total) => rows.length ? `<table><tbody>${rows.map(x => `<tr><td>${esc(x.k)}</td><td class="r ${cls}">${money(x.v)}</td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td><td class="r ${cls}">${money(total)}</td></tr></tfoot></table>` : '<p class="empty">None</p>';
+  const detail = x => [x.purpose && !String(x.description).startsWith(x.purpose) ? `[${x.purpose}]` : '', x.description, x.booking_ref ? `booking ${x.booking_ref}` : '', x.customer_name && !String(x.description).includes(x.customer_name) ? x.customer_name : '', x.employee_name && !String(x.description).includes(x.employee_name) ? x.employee_name : ''].filter(Boolean).map(esc).join(' · ');
+  let runIn = 0, runOut = 0;
+  return `<div class="paper">
+    <div class="head"><div><h1>${esc(v.name)}</h1><p>${esc(v.tagline)}</p></div><div class="contact">${esc(v.address)}<br>${[v.phone, v.phone2].filter(Boolean).map(esc).join(' · ')}</div></div>
+    <div class="title"><div><h2>${esc(P.title)}</h2><div style="font-size:14px;font-weight:600">${esc(P.sub)}</div></div>
+      <div class="meta">Prepared by <b>${esc(r.generated_by)}</b><br>${when(r.generated_at)} (PKT)<br>${r.ledger.length} entries</div></div>
+    ${auditBox(r, P)}
+    <div class="kpis"><div class="kpi in"><span>Money in</span><b>${money(r.income)}</b></div><div class="kpi out"><span>Money out</span><b>${money(r.expense)}</b></div><div class="kpi"><span>Net</span><b class="${net >= 0 ? 'in' : 'out'}">${money(net)}</b></div></div>
+
+    <h3>By payment method</h3>
+    ${r.by_method.length ? `<table><thead><tr><th>Method</th><th class="r">In</th><th class="r">Out</th><th class="r">Net</th></tr></thead><tbody>
+      ${r.by_method.map(m => `<tr><td>${esc(m.method)}</td><td class="r in">${money(m.income)}</td><td class="r out">${money(m.expense)}</td><td class="r">${money(m.income - m.expense)}</td></tr>`).join('')}</tbody></table>
+      <p class="muted" style="margin:4px 0 0">"Cash" net is the change in cash that should be in hand for this period.</p>` : '<p class="empty">No entries in this period.</p>'}
+
+    <div class="two"><div><h3>Income by category</h3>${catTable(r.income_by_category, 'in', r.income)}</div><div><h3>Expenses by category</h3>${catTable(r.expense_by_category, 'out', r.expense)}</div></div>
+
+    ${r.months.length ? `<h3>Month by month</h3><table><thead><tr><th>Month</th><th class="r">Entries</th><th class="r">In</th><th class="r">Out</th><th class="r">Net</th></tr></thead><tbody>
+      ${r.months.map(m => `<tr><td>${MON[Number(m.month.slice(5)) - 1]} ${m.month.slice(0, 4)}</td><td class="r">${m.count}</td><td class="r in">${money(m.income)}</td><td class="r out">${money(m.expense)}</td><td class="r">${money(m.income - m.expense)}</td></tr>`).join('')}</tbody>
+      <tfoot><tr><td>Total</td><td class="r">${r.ledger.length}</td><td class="r in">${money(r.income)}</td><td class="r out">${money(r.expense)}</td><td class="r">${money(net)}</td></tr></tfoot></table>` : ''}
+
+    <h3>Full ledger — every entry</h3>
+    <div class="scroll">${r.ledger.length ? `<table><thead><tr><th>Receipt</th><th>Date</th><th>Category</th><th>Details</th><th>Method</th><th>By</th><th class="r">In</th><th class="r">Out</th></tr></thead><tbody>
+      ${r.ledger.map(x => { if (x.type === 'income') runIn += x.amount; else runOut += x.amount;
+        return `<tr><td style="white-space:nowrap">${esc(x.no)}</td><td style="white-space:nowrap">${pd(x.date)}</td><td>${esc(x.category)}</td><td>${detail(x)}</td><td>${esc(x.method)}</td><td>${esc(x.recorded_by || '—')}</td>
+        <td class="r in">${x.type === 'income' ? money(x.amount) : ''}</td><td class="r out">${x.type === 'expense' ? money(x.amount) : ''}</td></tr>`; }).join('')}</tbody>
+      <tfoot><tr><td colspan="6">Totals</td><td class="r in">${money(runIn)}</td><td class="r out">${money(runOut)}</td></tr></tfoot></table>` : '<p class="empty">No entries in this period.</p>'}</div>
+
+    <h3>Events held in this period</h3>
+    ${r.events.length ? `<table><thead><tr><th>Date</th><th>Ref</th><th>Customer</th><th>Event</th><th>Hall</th><th class="r">Guests</th><th class="r">Total</th><th class="r">Paid</th><th class="r">Balance</th></tr></thead><tbody>
+      ${r.events.map(e => `<tr><td style="white-space:nowrap">${pd(e.date)} ${esc(e.slot)}</td><td>${esc(e.ref)}</td><td>${esc(e.customer_name)}</td><td>${esc(e.event_type)}</td><td>${esc(e.hall_name)}</td><td class="r">${e.guests}</td><td class="r">${money(e.total)}</td><td class="r in">${money(e.paid)}</td><td class="r ${e.total - e.paid > 0 ? 'out' : ''}">${money(e.total - e.paid)}</td></tr>`).join('')}</tbody></table>` : '<p class="empty">No events in this period.</p>'}
+
+    ${P.from === P.to ? `<h3>Booking activity today</h3>${r.booking_changes.length ? `<table><tbody>${r.booking_changes.map(a => `<tr><td style="white-space:nowrap">${when(a.created_at).split(', ').pop()}</td><td style="text-transform:capitalize">${esc(a.action)}</td><td>${esc(a.summary)}</td><td>${esc(a.admin_name)}</td></tr>`).join('')}</tbody></table>` : '<p class="empty">No bookings made, confirmed or cancelled.</p>'}` : ''}
+
+    <h3>Balances still owed by customers (as of today)</h3>
+    ${r.outstanding.length ? `<table><thead><tr><th>Event date</th><th>Ref</th><th>Customer</th><th>Phone</th><th class="r">Total</th><th class="r">Paid</th><th class="r">Balance</th></tr></thead><tbody>
+      ${r.outstanding.map(o => `<tr><td>${pd(o.date)}</td><td>${esc(o.ref)}</td><td>${esc(o.customer_name)}</td><td>${esc(o.phone)}</td><td class="r">${money(o.total)}</td><td class="r in">${money(o.paid)}</td><td class="r out">${money(o.total - o.paid)}</td></tr>`).join('')}</tbody>
+      <tfoot><tr><td colspan="6">Total owed</td><td class="r out">${money(r.outstanding.reduce((a, o) => a + o.total - o.paid, 0))}</td></tr></tfoot></table>` : '<p class="empty">Nothing owed.</p>'}
+
+    ${r.by_admin.length ? `<h3>Entries by admin</h3><table><thead><tr><th>Recorded by</th><th class="r">Entries</th><th class="r">In</th><th class="r">Out</th></tr></thead><tbody>
+      ${r.by_admin.map(a => `<tr><td>${esc(a.name)}</td><td class="r">${a.count}</td><td class="r in">${money(a.income)}</td><td class="r out">${money(a.expense)}</td></tr>`).join('')}</tbody></table>` : ''}
+
+    ${P.from !== P.to && r.closings.length ? `<h3>Day closings (audit trail)</h3><table><thead><tr><th>Day</th><th class="r">Entries</th><th class="r">In</th><th class="r">Out</th><th>Closed</th><th>Fingerprint</th><th>Status</th></tr></thead><tbody>
+      ${r.closings.slice().reverse().map(c => `<tr><td>${pd(c.date)}</td><td class="r">${c.tx_count}</td><td class="r">${money(c.income)}</td><td class="r">${money(c.expense)}</td><td>${esc(c.closed_by)}</td><td style="font-family:monospace;font-size:10px">${esc(c.fingerprint.slice(0, 12))}</td><td class="${c.verified ? 'ok-t' : 'bad-t'}">${c.verified ? '✔ unchanged' : '⚠ changed'}</td></tr>`).join('')}</tbody></table>` : ''}
+
+    <div class="sigs"><div class="sig"><b>Prepared by</b>Name: ${esc(r.generated_by)}<span>Signature & date: ______________________</span></div>
+      <div class="sig"><b>Checked & approved by (Owner / Auditor)</b>Name:<span>Signature & date: ______________________</span></div></div>
+    <div class="foot"><span>${esc(v.name)} · ${esc(P.title)} · ${esc(P.sub)}</span><span>Printed ${when(new Date().toISOString())} · Computer-generated from the venue's records</span></div>
+  </div>`;
+}
+
+async function load() {
+  renderPick();
+  const P = period();
+  document.title = `${P.title} — ${P.sub}`;
+  const res = await fetch(`/api/admin/report?from=${P.from}&to=${P.to}`);
+  const r = await res.json().catch(() => ({}));
+  if (!res.ok) { $('#out').innerHTML = `<div class="err"><h2>Report not available</h2><p>${esc(r.error || 'Please log in to the admin panel first.')}</p><p><a href="/admin">Go to admin</a></p></div>`; return; }
+  $('#out').innerHTML = render(r, P);
+}
+load();
+</script>
+</body>
+</html>

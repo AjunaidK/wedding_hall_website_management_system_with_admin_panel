@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Receipt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --em: #0f3b2f; --gold: #c9a45c; --ink: #1b2420; --muted: #66716b; --line: #ddd7c8; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ecebe5; color: var(--ink); font: 14px/1.5 'Jost', 'Segoe UI', sans-serif; }
+  .bar { position: sticky; top: 0; z-index: 5; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; padding: 12px; background: var(--em); }
+  .bar button, .bar a { font: 600 14px 'Jost', sans-serif; padding: 10px 16px; border-radius: 99px; border: 0; cursor: pointer; text-decoration: none; background: #fff; color: var(--em); }
+  .bar .wa { background: #25d366; color: #fff; } .bar .pr { background: var(--gold); color: #0a2a21; }
+  .bar .note { color: #cfe0d8; font-size: 13px; align-self: center; }
+  .paper { position: relative; width: 210mm; min-height: 297mm; margin: 18px auto; background: #fff; padding: 16mm 16mm 14mm; box-shadow: 0 10px 40px -18px rgba(0,0,0,.35); overflow: hidden; }
+  .head { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; padding-bottom: 12px; border-bottom: 2px solid var(--gold); }
+  .brand { display: flex; gap: 14px; align-items: center; }
+  .seal { width: 54px; height: 62px; border-radius: 27px 27px 8px 8px; background: var(--em); color: var(--gold); display: grid; place-items: center; font-size: 22px; overflow: hidden; flex: 0 0 54px; }
+  .seal img { width: 100%; height: 100%; object-fit: cover; }
+  .brand h1 { font: 600 26px/1.05 'Bodoni Moda', Georgia, serif; margin: 0; color: var(--em); }
+  .brand p { margin: 3px 0 0; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+  .contact { text-align: right; font-size: 12px; color: var(--muted); max-width: 70mm; }
+  .titlebar { display: flex; justify-content: space-between; align-items: flex-end; margin: 18px 0 14px; gap: 12px; }
+  .titlebar h2 { font: 600 22px 'Bodoni Moda', Georgia, serif; margin: 0; letter-spacing: .02em; text-transform: uppercase; }
+  .titlebar .meta { text-align: right; font-size: 12.5px; }
+  .titlebar .meta b { font-size: 15px; }
+  .tag { display: inline-block; padding: 3px 12px; border-radius: 99px; font-size: 11.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-top: 4px; }
+  .tag.confirmed, .tag.completed { background: #e5f3ea; color: #1f6b41; } .tag.pending { background: #fdf1dc; color: #8a5a0b; } .tag.cancelled { background: #f6e3e1; color: #9b2f28; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 26px; }
+  dl.kv { display: grid; grid-template-columns: 34mm 1fr; margin: 0; }
+  dl.kv dt, dl.kv dd { padding: 6px 0; border-bottom: 1px dashed var(--line); margin: 0; }
+  dl.kv dt { color: var(--muted); font-size: 12.5px; } dl.kv dd { font-weight: 600; }
+  h3 { font: 600 12px 'Jost'; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 20px 0 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border-bottom: 1.5px solid var(--ink); padding: 6px 4px; }
+  td { padding: 7px 4px; border-bottom: 1px solid var(--line); }
+  .r { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tot td { border: 0; padding: 4px; } .tot .big td { font-size: 16px; font-weight: 700; border-top: 1.5px solid var(--ink); padding-top: 8px; }
+  .tot .due td { color: #9b2f28; font-weight: 700; } .tot .clear td { color: #1f6b41; font-weight: 700; }
+  .amount { display: flex; justify-content: space-between; align-items: center; gap: 20px; border: 2px solid var(--em); border-radius: 12px; padding: 16px 20px; margin: 16px 0; background: #f7faf8; }
+  .amount .fig { font: 600 30px 'Bodoni Moda', Georgia, serif; color: var(--em); white-space: nowrap; }
+  .amount .words { font-style: italic; color: var(--ink); }
+  .amount small { display: block; color: var(--muted); font-style: normal; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 2px; }
+  .lead { font-size: 15px; margin: 4px 0 0; }
+  .terms { margin: 6px 0 0; padding-left: 18px; font-size: 12px; color: var(--muted); }
+  .sigs { display: grid; grid-template-columns: 1fr 1fr; gap: 26mm; margin-top: 20mm; page-break-inside: avoid; }
+  .sig { border-top: 1.5px solid var(--ink); padding-top: 6px; font-size: 12.5px; }
+  .sig b { display: block; font-size: 13px; }
+  .sig span { color: var(--muted); display: block; margin-top: 10px; }
+  .foot { margin-top: 14mm; display: flex; justify-content: space-between; font-size: 10.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 6px; }
+  .stamp { position: absolute; top: 120mm; left: 50%; transform: translateX(-50%) rotate(-18deg); font: 700 64px 'Jost'; letter-spacing: .1em; color: rgba(155, 47, 40, .13); border: 6px solid rgba(155, 47, 40, .13); padding: 4px 24px; border-radius: 12px; pointer-events: none; white-space: nowrap; }
+  .err { max-width: 520px; margin: 60px auto; background: #fff; padding: 24px; border-radius: 12px; text-align: center; }
+  @page { size: A4; margin: 0; }
+  @media print { body { background: #fff; } .bar { display: none; } .paper { margin: 0; box-shadow: none; width: 210mm; min-height: 0; padding: 12mm 15mm 8mm; } .sigs { margin-top: 14mm; } .foot { margin-top: 8mm; } dl.kv dt, dl.kv dd { padding: 4px 0; } td { padding: 5px 4px; } h3 { margin-top: 14px; } }
+  @media screen and (max-width: 820px) { .paper { width: 100%; min-height: 0; padding: 18px; margin: 0; } .grid, .sigs { grid-template-columns: 1fr; gap: 14px; } .sigs { gap: 40px; margin-top: 40px; } .foot { position: static; margin-top: 30px; } .head { flex-direction: column; } .contact { text-align: left; } dl.kv { grid-template-columns: 110px 1fr; } }
+.menu-list { margin: 0 0 6px; font-size: .86rem; line-height: 1.6; } .menu-list span:not(:last-child)::after { content: ' · '; color: #aaa; }
+</style>
+</head>
+<body>
+<div class="bar" id="bar">
+  <button class="pr" id="printBtn" type="button">Print / Save as PDF</button>
+  <a class="wa" id="waBtn" target="_blank" rel="noopener" hidden>Send on WhatsApp</a>
+  <a id="mailBtn" hidden>Send by email</a>
+  <button id="copyBtn" type="button" hidden>Copy customer link</button>
+  <span class="note" id="note"></span>
+</div>
+<div id="out"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const DOW = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const pd = d => { if (!d) return ''; const x = new Date(d + 'T12:00:00'); return `${x.getDate()} ${MON[x.getMonth()]} ${x.getFullYear()}`; };
+const pdl = d => { if (!d) return ''; const x = new Date(d + 'T12:00:00'); return `${DOW[x.getDay()]}, ${pd(d)}`; };
+const nowPk = () => new Date().toLocaleString('en-GB', { timeZone: 'Asia/Karachi', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+const fmt12 = t => { if (!/^\d{1,2}:\d{2}$/.test(t || '')) return t || ''; const [h, m] = t.split(':').map(Number); return `${((h + 11) % 12) + 1}${m ? ':' + String(m).padStart(2, '0') : ''} ${h < 12 ? 'am' : 'pm'}`; };
+let CUR = 'Rs';
+const money = n => `${CUR} ${Math.round(Number(n) || 0).toLocaleString('en-PK')}`;
+const intl = p => { const d = String(p || '').replace(/\D/g, ''); return d.startsWith('0') ? '92' + d.slice(1) : d; };
+
+// Amount in words, Pakistani style (thousand, lakh, crore)
+function words(n) {
+  n = Math.round(Math.abs(Number(n) || 0));
+  if (!n) return 'Zero';
+  const a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  const t = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+  const two = x => (x < 20 ? a[x] : t[Math.floor(x / 10)] + (x % 10 ? ' ' + a[x % 10] : ''));
+  const three = x => (x >= 100 ? a[Math.floor(x / 100)] + ' Hundred' + (x % 100 ? ' ' + two(x % 100) : '') : two(x));
+  const parts = [];
+  const crore = Math.floor(n / 1e7); n %= 1e7;
+  const lakh = Math.floor(n / 1e5); n %= 1e5;
+  const thou = Math.floor(n / 1e3); n %= 1e3;
+  if (crore) parts.push(three(crore) + ' Crore');
+  if (lakh) parts.push(two(lakh) + ' Lakh');
+  if (thou) parts.push(two(thou) + ' Thousand');
+  if (n) parts.push(three(n));
+  return parts.join(' ');
+}
+const inWords = n => `${words(n)} Rupees Only`;
+
+function header(v) {
+  return `<div class="head"><div class="brand"><div class="seal">${v.logo ? `<img src="${esc(v.logo)}" alt="">` : '✦'}</div><div><h1>${esc(v.name)}</h1><p>${esc(v.tagline)}</p></div></div>
+    <div class="contact">${esc(v.address)}<br>${[v.phone, v.phone2].filter(Boolean).map(esc).join(' · ')}${v.email ? '<br>' + esc(v.email) : ''}</div></div>`;
+}
+function sigs(left, leftName, right, rightName) {
+  return `<div class="sigs"><div class="sig"><b>${esc(left)}</b>${leftName ? `Name: ${esc(leftName)}` : 'Name:'}<span>Date: ____________________</span></div>
+    <div class="sig"><b>${esc(right)}</b>${rightName ? `Name: ${esc(rightName)}` : 'Name:'}<span>Date: ____________________</span></div></div>`;
+}
+const foot = no => `<div class="foot"><span>${no ? esc(no) + ' · ' : ''}Printed ${nowPk()}</span><span>Computer-generated receipt · valid with signatures</span></div>`;
+
+function renderBooking(r) {
+  const v = r.venue, b = r.booking, paid = b.paid, bal = b.total - paid;
+  const title = b.status === 'pending' ? 'Booking request' : b.status === 'cancelled' ? 'Booking (cancelled)' : 'Booking confirmation';
+  const pkgLine = b.package_name ? `${esc(b.package_name)} package · ${Number(b.guests).toLocaleString()} guests × ${money(b.per_head)}` : 'Hall booking';
+  return `<div class="paper">${header(v)}
+    ${b.status === 'cancelled' ? '<div class="stamp">CANCELLED</div>' : ''}
+    <div class="titlebar"><div><h2>${title}</h2><span class="tag ${esc(b.status)}">${esc(b.status)}</span></div>
+      <div class="meta">Booking ref<br><b>${esc(b.ref)}</b><br>Issued ${pd(new Date().toISOString().slice(0, 10))}</div></div>
+    <div class="grid">
+      <dl class="kv"><dt>Customer</dt><dd>${esc(b.customer_name)}</dd><dt>Phone</dt><dd>${esc(b.phone)}</dd>${b.email ? `<dt>Email</dt><dd>${esc(b.email)}</dd>` : ''}<dt>Event</dt><dd>${esc(b.event_type || '—')}</dd></dl>
+      <dl class="kv"><dt>Date</dt><dd>${pdl(b.date)}</dd><dt>Time</dt><dd>${esc(b.slot)}${b.slot_time ? ` (${b.slot_time.split('–').map(fmt12).join('–')})` : ''}</dd><dt>Hall</dt><dd>${esc(b.hall_name)}</dd><dt>Guests</dt><dd>${Number(b.guests).toLocaleString()}</dd></dl>
+    </div>
+    ${(b.menu || []).length ? `<h3>Menu</h3><p class="menu-list">${b.menu.map(d => `<span>${esc(d.name)}</span>`).join('')}</p>` : ''}
+    <h3>Charges</h3>
+    <table><tbody>
+      <tr><td>${pkgLine}</td><td class="r">${money(b.base_total)}</td></tr>
+      ${(b.menu || []).filter(d => d.amount).map(d => `<tr><td>Menu: ${esc(d.name)}${d.price_type === 'per head' ? ` (${Number(b.guests).toLocaleString()} × ${money(d.price)})` : ''}</td><td class="r">${money(d.amount)}</td></tr>`).join('')}
+      ${(b.addons || []).map(a => `<tr><td>${esc(a.name)}${a.price_type === 'per head' && a.price != null ? ` (${Number(b.guests).toLocaleString()} × ${money(a.price)})` : ''}</td><td class="r">${a.price == null && !a.amount ? 'Price to be confirmed' : money(a.amount)}</td></tr>`).join('')}
+      ${b.extras ? `<tr><td>Other extras</td><td class="r">${money(b.extras)}</td></tr>` : ''}
+      ${b.discount ? `<tr><td>Discount</td><td class="r">− ${money(b.discount)}</td></tr>` : ''}
+      ${Math.round(b.base_total + (b.menu_total || 0) + (b.addons_total || 0) + (b.extras || 0) - (b.discount || 0)) !== Math.round(b.total) ? `<tr><td>Agreed adjustment</td><td class="r">${money(b.total - (b.base_total + (b.menu_total || 0) + (b.addons_total || 0) + (b.extras || 0) - (b.discount || 0)))}</td></tr>` : ''}
+    </tbody></table>
+    <table class="tot" style="margin-top:4px"><tbody>
+      <tr class="big"><td>Total</td><td class="r">${money(b.total)}</td></tr>
+      <tr><td>Paid so far</td><td class="r">${money(paid)}</td></tr>
+      <tr class="${bal > 0 ? 'due' : 'clear'}"><td>${bal > 0 ? 'Balance due' : 'Fully paid'}</td><td class="r">${money(Math.max(0, bal))}</td></tr>
+    </tbody></table>
+    ${b.status === 'pending' && r.advance_percent ? `<p class="lead">Advance of <b>${money(Math.round(b.total * r.advance_percent / 100))}</b> (${r.advance_percent}%) is required to confirm this date.</p>` : ''}
+    ${r.payments.length ? `<h3>Payments received</h3><table><thead><tr><th>Receipt</th><th>Date</th><th>For</th><th>Method</th><th>Received by</th><th class="r">Amount</th></tr></thead><tbody>
+      ${r.payments.map(p => `<tr><td>${esc(p.no)}</td><td>${pd(p.date)}</td><td>${esc(p.purpose || '—')}</td><td>${esc(p.method)}</td><td>${esc(p.recorded_by || '')}</td><td class="r">${money(p.amount)}</td></tr>`).join('')}</tbody></table>` : ''}
+    ${b.notes ? `<h3>Special arrangements</h3><p style="margin:0">${esc(b.notes)}</p>` : ''}
+    ${v.terms.length ? `<h3>Terms</h3><ul class="terms">${v.terms.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+    ${sigs(v.manager_label, b.status_by && b.status_by !== 'Customer (website)' ? b.status_by : '', 'Customer signature', b.customer_name)}
+    ${foot(b.ref)}</div>`;
+}
+
+function renderPayment(r) {
+  const v = r.venue, t = r.tx;
+  let who = '', purpose = '', extra = '', right = 'Customer signature', rightName = '', rows = '';
+  if (r.booking) {
+    const b = r.booking;
+    who = `Received with thanks from <b>${esc(b.customer_name)}</b>${b.phone ? ` (${esc(b.phone)})` : ''}`;
+    purpose = `${esc(r.label)} for ${esc(b.event_type || 'event')} on ${pdl(b.date)}, ${esc(b.slot)}, ${esc(b.hall_name)} · booking ${esc(b.ref)}${t.description && t.description.split(' · ').length > 4 ? ' · ' + esc(t.description.split(' · ').slice(4).join(' · ')) : ''}`;
+    rows = `<dl class="kv"><dt>Booking ref</dt><dd>${esc(b.ref)}</dd><dt>Event</dt><dd>${esc(b.event_type || '—')}</dd><dt>Date</dt><dd>${pdl(b.date)} · ${esc(b.slot)}</dd><dt>Hall · guests</dt><dd>${esc(b.hall_name)} · ${Number(b.guests).toLocaleString()}</dd>${b.package_name ? `<dt>Package</dt><dd>${esc(b.package_name)}</dd>` : ''}${(b.addons || []).length ? `<dt>Extras</dt><dd>${esc(b.addons.join(', '))}</dd>` : ''}</dl>`;
+    extra = `<table class="tot" style="margin-top:10px"><tbody><tr><td>Booking total</td><td class="r">${money(b.total)}</td></tr>
+      <tr><td>Paid before this receipt</td><td class="r">${money(r.paid_before)}</td></tr><tr><td>This payment</td><td class="r">${money(t.amount)}</td></tr>
+      <tr class="big"><td>Total paid</td><td class="r">${money(r.paid_after)}</td></tr>
+      <tr class="${r.balance_after > 0 ? 'due' : 'clear'}"><td>${r.balance_after > 0 ? 'Balance remaining' : 'Fully paid'}</td><td class="r">${money(Math.max(0, r.balance_after))}</td></tr></tbody></table>`;
+    rightName = b.customer_name;
+  } else if (t.salary_payment_id) {
+    who = `Paid to <b>${esc(t.employee_name)}</b>${t.employee_role ? ` (${esc(t.employee_role)})` : ''}`;
+    purpose = `Salary for ${t.salary_month ? MON[Number(t.salary_month.slice(5)) - 1] + ' ' + t.salary_month.slice(0, 4) : ''}`;
+    rows = `<dl class="kv"><dt>Employee</dt><dd>${esc(t.employee_name)}</dd>${t.employee_cnic ? `<dt>CNIC</dt><dd>${esc(t.employee_cnic)}</dd>` : ''}<dt>Month</dt><dd>${esc(purpose.replace('Salary for ', ''))}</dd></dl>`;
+    extra = `<table class="tot" style="margin-top:10px"><tbody><tr><td>Basic salary</td><td class="r">${money(t.base)}</td></tr>${t.bonus ? `<tr><td>Bonus</td><td class="r">${money(t.bonus)}</td></tr>` : ''}
+      ${t.deduction ? `<tr><td>Deduction / advance</td><td class="r">− ${money(t.deduction)}</td></tr>` : ''}<tr class="big"><td>Net paid</td><td class="r">${money(t.amount)}</td></tr></tbody></table>`;
+    right = 'Employee signature'; rightName = t.employee_name;
+  } else if (t.type === 'income') {
+    who = 'Received with thanks'; purpose = `${esc(t.category)}${t.description ? ' — ' + esc(t.description) : ''}`; right = 'Payer signature';
+  } else {
+    who = 'Paid out'; purpose = `${esc(t.category)}${t.description ? ' — ' + esc(t.description) : ''}`; right = 'Received by (payee) signature';
+  }
+  return `<div class="paper">${header(v)}
+    <div class="titlebar"><div><h2>${esc(r.label)} receipt</h2></div><div class="meta">Receipt no.<br><b>${esc(t.no)}</b><br>Date ${pd(t.date)}</div></div>
+    <p class="lead">${who}</p>
+    <div class="amount"><div><small>Amount</small><div class="words">${inWords(t.amount)}</div></div><div class="fig">${money(t.amount)}</div></div>
+    <dl class="kv" style="margin-bottom:6px"><dt>For</dt><dd>${purpose}</dd><dt>Payment method</dt><dd>${esc(t.method)}</dd><dt>${t.type === 'income' ? 'Received by' : 'Paid by'}</dt><dd>${esc(t.recorded_by || '—')}</dd></dl>
+    ${rows ? `<h3>Details</h3>${rows}` : ''}
+    ${extra}
+    ${sigs(v.manager_label, t.recorded_by, right, rightName)}
+    ${foot(t.no)}</div>`;
+}
+
+async function load() {
+  const parts = location.pathname.split('/').filter(Boolean), q = new URLSearchParams(location.search);
+  const isPublic = parts[0] === 'r';
+  const url = isPublic ? `/api/receipt/${parts[1]}/${parts[2]}/${parts[3]}` : `/api/admin/receipt/${q.get('type') === 'booking' ? 'booking' : 'tx'}/${encodeURIComponent(q.get('id') || '')}`;
+  const res = await fetch(url);
+  const r = await res.json().catch(() => ({}));
+  if (!res.ok) { $('#bar').hidden = true; $('#out').innerHTML = `<div class="err"><h2>Receipt not available</h2><p>${esc(r.error || 'Please ask the venue for a new link.')}</p></div>`; return; }
+  CUR = r.venue.currency;
+  if (/^#[0-9a-f]{6}$/i.test(r.venue.primary || '')) document.documentElement.style.setProperty('--em', r.venue.primary);
+  if (/^#[0-9a-f]{6}$/i.test(r.venue.accent || '')) document.documentElement.style.setProperty('--gold', r.venue.accent);
+  $('#out').innerHTML = r.kind === 'booking' ? renderBooking(r) : renderPayment(r);
+  document.title = r.kind === 'booking' ? `Booking ${r.booking.ref} — ${r.venue.name}` : `Receipt ${r.tx.no} — ${r.venue.name}`;
+  setupShare(r, isPublic);
+}
+
+function setupShare(r, isPublic) {
+  const link = location.origin + r.share;
+  const logIt = (how, what) => { if (!isPublic) fetch('/api/admin/receipt/log', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ how, what, kind: r.kind, id: r.kind === 'booking' ? r.booking.id : r.tx.id, booking_id: r.kind === 'booking' ? r.booking.id : r.tx.booking_id }) }).catch(() => {}); };
+  $('#printBtn').onclick = () => { logIt('print', r.kind === 'booking' ? `booking receipt ${r.booking.ref}` : `receipt ${r.tx.no}`); window.print(); };
+  if (isPublic) { $('#note').textContent = 'Use "Print / Save as PDF" to keep a copy.'; return; }
+  let phone = '', email = '', msg = '', subject = '', what = '';
+  const v = r.venue;
+  if (r.kind === 'booking') {
+    const b = r.booking, bal = b.total - b.paid;
+    phone = b.phone; email = b.email; what = `booking receipt ${b.ref}`;
+    const head = b.status === 'confirmed' || b.status === 'completed' ? `your booking is CONFIRMED ✅` : b.status === 'cancelled' ? 'your booking has been cancelled' : 'we have received your booking request';
+    msg = `Assalam o Alaikum ${b.customer_name},\n${head} at ${v.name}.\n\nRef: ${b.ref}\nEvent: ${b.event_type || '—'}\nDate: ${pdl(b.date)} (${b.slot})\nHall: ${b.hall_name} · ${b.guests} guests\nTotal: ${money(b.total)}\nPaid: ${money(b.paid)}\nBalance: ${money(Math.max(0, bal))}\n\nYour receipt (view or print): ${link}\n\n${v.name}${v.phone ? ' · ' + v.phone : ''}`;
+    subject = `${b.status === 'confirmed' ? 'Booking confirmation' : 'Booking'} ${b.ref} — ${v.name}`;
+  } else if (r.booking) {
+    const b = r.booking;
+    phone = b.phone; what = `receipt ${r.tx.no} (${r.label})`;
+    msg = `Assalam o Alaikum ${b.customer_name},\nThank you. We have received ${money(r.tx.amount)} (${r.label.replace(/ payment$/, '').toLowerCase()}, ${r.tx.method}) for booking ${b.ref} on ${pdl(b.date)}.\n\nReceipt no: ${r.tx.no}\nTotal paid: ${money(r.paid_after)}\nBalance: ${money(Math.max(0, r.balance_after))}\n\nYour receipt (view or print): ${link}\n\n${v.name}`;
+    subject = `Payment receipt ${r.tx.no} — ${v.name}`;
+  } else {
+    $('#note').textContent = 'Internal receipt — print it for signatures.';
+    return;
+  }
+  if (intl(phone).length >= 11) { $('#waBtn').href = `https://wa.me/${intl(phone)}?text=${encodeURIComponent(msg)}`; $('#waBtn').hidden = false; $('#waBtn').onclick = () => logIt('whatsapp', what); }
+  $('#mailBtn').href = `mailto:${encodeURIComponent(email || '')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(msg)}`;
+  $('#mailBtn').hidden = false; $('#mailBtn').onclick = () => logIt('email', what);
+  $('#copyBtn').hidden = false;
+  $('#copyBtn').onclick = async () => { try { await navigator.clipboard.writeText(link); $('#note').textContent = 'Link copied — paste it in any chat.'; } catch { $('#note').textContent = link; } };
+}
+load().catch(() => { $('#out').innerHTML = '<div class="err"><h2>Could not load the receipt</h2><p>Please refresh the page.</p></div>'; });
+</script>
+</body>
+</html>
